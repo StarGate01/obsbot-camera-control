@@ -20,13 +20,13 @@ TrackingControlWidget::TrackingControlWidget(CameraController *controller, QWidg
     m_tiny2Capabilities = m_controller->hasTiny2Capabilities();
 
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setContentsMargins(8, 14, 8, 14);
-    layout->setSpacing(14);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(18);
 
     m_trackingGroupBox = new QGroupBox("Face Tracking", this);
     m_trackingGroupBox->setFlat(true);
     QVBoxLayout *groupLayout = new QVBoxLayout(m_trackingGroupBox);
-    groupLayout->setContentsMargins(16, 16, 16, 16);
+    groupLayout->setContentsMargins(0, 0, 0, 0);
     groupLayout->setSpacing(12);
 
     m_trackingCheckBox = new QCheckBox("Enable Auto-Framing", this);
@@ -114,7 +114,7 @@ TrackingControlWidget::TrackingControlWidget(CameraController *controller, QWidg
     QGroupBox *ptzGroupBox = new QGroupBox("Manual Camera Control", this);
     ptzGroupBox->setFlat(true);
     QVBoxLayout *ptzGroupLayout = new QVBoxLayout(ptzGroupBox);
-    ptzGroupLayout->setContentsMargins(16, 16, 16, 16);
+    ptzGroupLayout->setContentsMargins(0, 0, 0, 8);
     ptzGroupLayout->setSpacing(12);
 
     // Two-column layout: sliders left, XY pad right
@@ -159,16 +159,20 @@ TrackingControlWidget::TrackingControlWidget(CameraController *controller, QWidg
 
     // Invert controls checkbox
     m_invertControlsCheckBox = new QCheckBox(tr("Invert controls"), this);
-    m_invertControlsCheckBox->setStyleSheet("font-size: 10px;");
     leftColumn->addWidget(m_invertControlsCheckBox);
 
     // Mirror checkbox — syncs with Creative FX horizontal flip
     m_mirrorCheckBox = new QCheckBox(tr("Mirror view"), this);
-    m_mirrorCheckBox->setStyleSheet("font-size: 10px;");
     connect(m_mirrorCheckBox, &QCheckBox::toggled, this, [this](bool checked) {
         emit mirrorToggled(checked);
     });
     leftColumn->addWidget(m_mirrorCheckBox);
+
+    // Position label — placed here so ptzGroupLayout ends with the XY pad row
+    m_positionLabel = new QLabel("Position: Pan 0.00, Tilt 0.00", this);
+    m_positionLabel->setObjectName("hintLabel");
+    m_positionLabel->setAlignment(Qt::AlignLeft);
+    leftColumn->addWidget(m_positionLabel);
 
     leftColumn->addStretch();
     columnsLayout->addLayout(leftColumn, 1);
@@ -179,12 +183,6 @@ TrackingControlWidget::TrackingControlWidget(CameraController *controller, QWidg
     columnsLayout->addWidget(m_xyPad);
 
     ptzGroupLayout->addLayout(columnsLayout);
-
-    // Position label (full width below both columns)
-    m_positionLabel = new QLabel("Position: Pan 0.00, Tilt 0.00", this);
-    m_positionLabel->setAlignment(Qt::AlignCenter);
-    m_positionLabel->setStyleSheet("color: palette(mid); font-size: 11px;");
-    ptzGroupLayout->addWidget(m_positionLabel);
 
     ptzContainerLayout->addWidget(ptzGroupBox);
     layout->addWidget(m_ptzContainer);

@@ -9,13 +9,13 @@ PTZControlWidget::PTZControlWidget(CameraController *controller, QWidget *parent
     , m_settingsWidget(nullptr)
 {
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setContentsMargins(8, 14, 8, 14);
-    layout->setSpacing(14);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(18);
 
     // Presets section
     QGroupBox *presetGroup = new QGroupBox("Camera Presets", this);
     QVBoxLayout *presetLayout = new QVBoxLayout(presetGroup);
-    presetLayout->setContentsMargins(16, 16, 16, 16);
+    presetLayout->setContentsMargins(0, 0, 0, 0);
     presetLayout->setSpacing(8);
 
     for (int i = 0; i < 3; ++i) {
@@ -28,11 +28,11 @@ PTZControlWidget::PTZControlWidget(CameraController *controller, QWidget *parent
         QHBoxLayout *row = new QHBoxLayout();
         row->setSpacing(8);
         QLabel *titleLabel = new QLabel(QString("Preset %1").arg(i + 1), this);
-        titleLabel->setStyleSheet("font-weight: 600; font-size: 11px;");
+        titleLabel->setStyleSheet("font-weight: 600;");
         row->addWidget(titleLabel);
 
         presetUi.statusLabel = new QLabel("Empty", this);
-        presetUi.statusLabel->setStyleSheet("color: palette(mid); font-size: 11px;");
+        presetUi.statusLabel->setStyleSheet("color: palette(mid);");
         row->addWidget(presetUi.statusLabel, 1);
 
         presetUi.recallButton = new QPushButton("Recall", this);
@@ -56,7 +56,7 @@ PTZControlWidget::PTZControlWidget(CameraController *controller, QWidget *parent
     // Image Quality Presets section
     QGroupBox *imagePresetGroup = new QGroupBox("Image Quality Presets", this);
     QVBoxLayout *imagePresetLayout = new QVBoxLayout(imagePresetGroup);
-    imagePresetLayout->setContentsMargins(16, 16, 16, 16);
+    imagePresetLayout->setContentsMargins(0, 0, 0, 0);
     imagePresetLayout->setSpacing(8);
 
     for (int i = 0; i < 3; ++i) {
@@ -66,11 +66,11 @@ PTZControlWidget::PTZControlWidget(CameraController *controller, QWidget *parent
         QHBoxLayout *row = new QHBoxLayout();
         row->setSpacing(8);
         QLabel *titleLabel = new QLabel(QString("Preset %1").arg(i + 1), this);
-        titleLabel->setStyleSheet("font-weight: 600; font-size: 11px;");
+        titleLabel->setStyleSheet("font-weight: 600;");
         row->addWidget(titleLabel);
 
         imagePresetUi.statusLabel = new QLabel("Empty", this);
-        imagePresetUi.statusLabel->setStyleSheet("color: palette(mid); font-size: 11px;");
+        imagePresetUi.statusLabel->setStyleSheet("color: palette(mid);");
         row->addWidget(imagePresetUi.statusLabel, 1);
 
         imagePresetUi.recallButton = new QPushButton("Recall", this);

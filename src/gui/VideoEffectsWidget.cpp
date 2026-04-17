@@ -52,13 +52,8 @@ VideoEffectsWidget::VideoEffectsWidget(QWidget *parent)
     , m_highlightColorButton(nullptr)
 {
     auto *rootLayout = new QVBoxLayout(this);
-    rootLayout->setContentsMargins(12, 12, 12, 12);
-    rootLayout->setSpacing(12);
-
-    QLabel *infoLabel = new QLabel(tr("Creative adjustments are applied in software and do not change the camera's onboard settings."), this);
-    infoLabel->setWordWrap(true);
-    infoLabel->setStyleSheet("color: palette(mid); font-size: 11px;");
-    rootLayout->addWidget(infoLabel);
+    rootLayout->setContentsMargins(0, 0, 0, 0);
+    rootLayout->setSpacing(18);
 
     auto addSlider = [&](QVBoxLayout *groupLayout, const QString &label, float min, float max, float initial, std::function<void(float)> setter) {
         QSlider *slider = createSlider(this);
@@ -70,6 +65,7 @@ VideoEffectsWidget::VideoEffectsWidget(QWidget *parent)
     // Tone adjustments
     QGroupBox *toneGroup = new QGroupBox(tr("Tone"));
     QVBoxLayout *toneLayout = new QVBoxLayout(toneGroup);
+    toneLayout->setContentsMargins(0, 0, 0, 0);
     toneLayout->setSpacing(6);
     addSlider(toneLayout, tr("Brightness"), -0.5f, 0.5f, m_settings.brightness, [this](float v) {
         m_settings.brightness = v;
@@ -96,6 +92,7 @@ VideoEffectsWidget::VideoEffectsWidget(QWidget *parent)
     // Color adjustments
     QGroupBox *colorGroup = new QGroupBox(tr("Color"));
     QVBoxLayout *colorLayout = new QVBoxLayout(colorGroup);
+    colorLayout->setContentsMargins(0, 0, 0, 0);
     colorLayout->setSpacing(6);
     addSlider(colorLayout, tr("Saturation"), -1.0f, 1.0f, m_settings.saturation, [this](float v) {
         m_settings.saturation = v;
@@ -162,6 +159,7 @@ VideoEffectsWidget::VideoEffectsWidget(QWidget *parent)
     // Effects adjustments
     QGroupBox *effectsGroup = new QGroupBox(tr("Creative Effects"));
     QVBoxLayout *effectsLayout = new QVBoxLayout(effectsGroup);
+    effectsLayout->setContentsMargins(0, 0, 0, 0);
     effectsLayout->setSpacing(6);
     addSlider(effectsLayout, tr("Noise"), 0.0f, 0.4f, m_settings.noise, [this](float v) {
         m_settings.noise = v;
@@ -192,6 +190,7 @@ VideoEffectsWidget::VideoEffectsWidget(QWidget *parent)
     // Orientation
     QGroupBox *orientationGroup = new QGroupBox(tr("Orientation"));
     QVBoxLayout *orientationLayout = new QVBoxLayout(orientationGroup);
+    orientationLayout->setContentsMargins(0, 0, 0, 0);
     orientationLayout->setSpacing(6);
 
     m_horizontalFlipCheckBox = new QCheckBox(tr("Mirror (horizontal flip)"), orientationGroup);
@@ -208,6 +207,11 @@ VideoEffectsWidget::VideoEffectsWidget(QWidget *parent)
     resetButton->setObjectName("secondaryAction");
     connect(resetButton, &QPushButton::clicked, this, &VideoEffectsWidget::reset);
     rootLayout->addWidget(resetButton);
+
+    QLabel *infoLabel = new QLabel(tr("Creative adjustments are applied in software and do not change the camera's onboard settings."), this);
+    infoLabel->setObjectName("hintLabel");
+    infoLabel->setWordWrap(true);
+    rootLayout->addWidget(infoLabel);
 
     rootLayout->addStretch(1);
 }

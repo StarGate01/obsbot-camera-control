@@ -13,12 +13,12 @@ CameraSettingsWidget::CameraSettingsWidget(CameraController *controller, QWidget
     m_commandTimer = new QTimer(this);
     m_commandTimer->setSingleShot(true);
     QVBoxLayout *layout = new QVBoxLayout(this);
-    layout->setContentsMargins(8, 14, 8, 14);
-    layout->setSpacing(14);
+    layout->setContentsMargins(0, 0, 0, 0);
+    layout->setSpacing(18);
 
     m_advancedGroupBox = new QGroupBox("Advanced Camera Settings", this);
     QVBoxLayout *groupLayout = new QVBoxLayout(m_advancedGroupBox);
-    groupLayout->setContentsMargins(16, 16, 16, 16);
+    groupLayout->setContentsMargins(0, 0, 0, 0);
     groupLayout->setSpacing(10);
 
     // HDR
@@ -58,7 +58,7 @@ CameraSettingsWidget::CameraSettingsWidget(CameraController *controller, QWidget
     // Image Controls Group
     QGroupBox *imageGroupBox = new QGroupBox("Image Controls", this);
     QVBoxLayout *imageLayout = new QVBoxLayout(imageGroupBox);
-    imageLayout->setContentsMargins(16, 16, 16, 16);
+    imageLayout->setContentsMargins(0, 0, 0, 0);
     imageLayout->setSpacing(10);
 
     // Brightness
@@ -105,7 +105,8 @@ CameraSettingsWidget::CameraSettingsWidget(CameraController *controller, QWidget
 
     // White Balance
     QHBoxLayout *wbLayout = new QHBoxLayout();
-    wbLayout->addWidget(new QLabel("White Balance:", this));
+    wbLayout->setContentsMargins(0, 0, 0, 0);
+    wbLayout->addWidget(new QLabel("White Balance:", this), 0, Qt::AlignVCenter);
     m_whiteBalanceComboBox = new QComboBox(this);
     m_whiteBalanceComboBox->addItem("Auto", static_cast<int>(Device::DevWhiteBalanceAuto));
     m_whiteBalanceComboBox->addItem("Daylight", static_cast<int>(Device::DevWhiteBalanceDaylight));
@@ -119,12 +120,11 @@ CameraSettingsWidget::CameraSettingsWidget(CameraController *controller, QWidget
     m_whiteBalanceComboBox->setToolTip("Adjust white balance for lighting conditions");
     connect(m_whiteBalanceComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &CameraSettingsWidget::onWhiteBalanceChanged);
-    wbLayout->addWidget(m_whiteBalanceComboBox);
-    wbLayout->addStretch();
+    wbLayout->addWidget(m_whiteBalanceComboBox, 1);
     imageLayout->addLayout(wbLayout);
 
     QHBoxLayout *wbKelvinLayout = new QHBoxLayout();
-    wbKelvinLayout->setContentsMargins(20, 0, 0, 0);
+    wbKelvinLayout->setContentsMargins(0, 0, 0, 0);
     wbKelvinLayout->setSpacing(8);
     m_whiteBalanceKelvinSlider = new QSlider(Qt::Horizontal, this);
     m_whiteBalanceKelvinSlider->setRange(2000, 10000);

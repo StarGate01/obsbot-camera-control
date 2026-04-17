@@ -178,7 +178,7 @@ FilterPreviewWidget::FilterPreviewWidget(QWidget *parent)
     , m_geometryInitialized(false)
 {
     setMinimumSize(320, 240);
-    setUpdateBehavior(QOpenGLWidget::PartialUpdate);
+    setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
 }
 
 FilterPreviewWidget::~FilterPreviewWidget()

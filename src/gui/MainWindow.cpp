@@ -438,7 +438,7 @@ void MainWindow::setupUI()
 
     QGroupBox *virtualCameraGroup = new QGroupBox(tr("Virtual Camera"), scrollContent);
     QVBoxLayout *virtualLayout = new QVBoxLayout(virtualCameraGroup);
-    virtualLayout->setContentsMargins(16, 16, 16, 16);
+    virtualLayout->setContentsMargins(0, 0, 0, 0);
     virtualLayout->setSpacing(10);
 
     m_virtualCameraCheckbox = new QCheckBox(tr("Enable virtual camera output"), virtualCameraGroup);
@@ -490,14 +490,15 @@ void MainWindow::setupUI()
     virtualLayout->addLayout(virtualResolutionLayout);
 
     QLabel *virtualResolutionHint = new QLabel(tr("Pick a fixed size to keep Zoom and other apps happy when you change preview quality."), virtualCameraGroup);
+    virtualResolutionHint->setObjectName("hintLabel");
     virtualResolutionHint->setWordWrap(true);
-    virtualResolutionHint->setStyleSheet("color: palette(mid); font-size: 11px;");
     virtualLayout->addWidget(virtualResolutionHint);
+
     scrollLayout->addWidget(virtualCameraGroup);
 
     QGroupBox *snapshotGroup = new QGroupBox(tr("Snapshots"), scrollContent);
     QVBoxLayout *snapshotLayout = new QVBoxLayout(snapshotGroup);
-    snapshotLayout->setContentsMargins(16, 16, 16, 16);
+    snapshotLayout->setContentsMargins(0, 0, 0, 0);
     snapshotLayout->setSpacing(10);
 
     QHBoxLayout *snapshotDirLayout = new QHBoxLayout();
@@ -518,8 +519,8 @@ void MainWindow::setupUI()
     snapshotLayout->addLayout(snapshotDirLayout);
 
     QLabel *snapshotHint = new QLabel(tr("Use Copy to also place the image on the clipboard. Leave blank for the default path shown above."), snapshotGroup);
+    snapshotHint->setObjectName("hintLabel");
     snapshotHint->setWordWrap(true);
-    snapshotHint->setStyleSheet("color: palette(mid); font-size: 11px;");
     snapshotLayout->addWidget(snapshotHint);
 
     scrollLayout->addWidget(snapshotGroup);
@@ -655,6 +656,7 @@ void MainWindow::applyModernStyle()
 
     const QColor footerStatusColor = withAlphaF(text, 0.65);
     const QColor footerCheckboxColor = withAlphaF(text, 0.7);
+    const QColor hintTextColor = withAlphaF(text, 0.55);
     const QColor detachCheckedText = highlight;
 
     const QString style = QStringLiteral(R"(
@@ -705,6 +707,7 @@ void MainWindow::applyModernStyle()
             border: 1px solid %14;
             border-radius: 14px;
             margin-top: 14px;
+            padding: 12px 16px;
         }
         QGroupBox::title {
             subcontrol-origin: margin;
@@ -735,6 +738,24 @@ void MainWindow::applyModernStyle()
         QCheckBox#footerCheckbox {
             color: %16;
         }
+        QLabel#hintLabel {
+            color: %17;
+            font-size: 11px;
+        }
+        QComboBox {
+            border: 1px solid %18;
+            border-radius: 8px;
+            background-color: %19;
+            padding: 4px 8px;
+            min-height: 22px;
+        }
+        QComboBox QAbstractItemView {
+            background-color: %20;
+            border: 1px solid %21;
+            selection-background-color: %22;
+            selection-color: %23;
+            outline: 0px;
+        }
     )")
         .arg(toCssColor(cardBackground))
         .arg(toCssColor(cardBorder))
@@ -751,7 +772,14 @@ void MainWindow::applyModernStyle()
         .arg(toCssColor(previewPlaceholderBorder))
         .arg(toCssColor(groupBorder))
         .arg(toCssColor(footerStatusColor))
-        .arg(toCssColor(footerCheckboxColor));
+        .arg(toCssColor(footerCheckboxColor))
+        .arg(toCssColor(hintTextColor))
+        .arg(toCssColor(comboBorder))
+        .arg(toCssColor(comboBackground))
+        .arg(toCssColor(comboPopupBackground))
+        .arg(toCssColor(comboPopupBorder))
+        .arg(toCssColor(comboSelectionBackground))
+        .arg(toCssColor(comboSelectionText));
 
     setStyleSheet(style);
     m_isApplyingStyle = false;
@@ -1114,9 +1142,26 @@ void MainWindow::onStateChanged(const CameraController::CameraState &state)
 void MainWindow::fitTabToCurrentPage()
 {
     QWidget *page = m_tabWidget->currentWidget();
-    if (!page) return;
+    if (!page)
+        return;
+
+    // Activate the layout before querying sizeHint().  The initial call arrives
+    // via QTimer::singleShot(0) — before the first paint — at which point the
+    // layout may not yet have computed its geometry.  activate() forces that
+    // computation so sizeHint() returns an accurate value.
+    if (auto *l = page->layout())
+        l->activate();
+
+    // Use the larger of sizeHint and minimumSizeHint so that widgets whose
+    // setMinimumSize() constraint exceeds their layout's sizeHint (e.g. XYPad,
+    // minimum 150×150) are never clipped.
+    const int pageH = std::max(page->sizeHint().height(),
+                               page->minimumSizeHint().height());
+    if (pageH <= 0)
+        return; // layout not ready; the QTimer::singleShot call will retry
+
     m_tabWidget->setMaximumHeight(
-        page->sizeHint().height() + m_tabWidget->tabBar()->sizeHint().height());
+        pageH + m_tabWidget->tabBar()->sizeHint().height());
 }
 
 void MainWindow::onCommandFailed(const QString &description, int errorCode)
